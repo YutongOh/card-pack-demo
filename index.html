@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>开卡包交互 Demo</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app" aria-label="card pack interaction demo">
+      <section class="stage" id="stage">
+        <div class="ambient ambient-one"></div>
+        <div class="ambient ambient-two"></div>
+
+        <div class="cards-area" id="cardsArea">
+          <div class="card-stack" id="cardStack">
+            <article class="card card-sun">
+              <div class="card-glass"></div>
+              <div class="card-art"></div>
+            </article>
+            <article class="card card-comet">
+              <div class="card-glass"></div>
+              <div class="card-art"></div>
+            </article>
+            <article class="card card-tide">
+              <div class="card-glass"></div>
+              <div class="card-art"></div>
+            </article>
+            <article class="card card-bloom">
+              <div class="card-glass"></div>
+              <div class="card-art"></div>
+            </article>
+            <article class="card card-forge">
+              <div class="card-glass"></div>
+              <div class="card-art"></div>
+            </article>
+          </div>
+        </div>
+
+        <div class="pack-area" id="packArea">
+          <div class="pack" id="pack">
+            <div class="pack-depth pack-back"></div>
+            <div class="pack-depth pack-side pack-side-left"></div>
+            <div class="pack-depth pack-side pack-side-right"></div>
+            <div class="pack-half pack-half-top">
+              <div class="pack-face">
+                <div class="edge-crimp edge-crimp-top"></div>
+                <div class="edge-crimp edge-crimp-bottom"></div>
+                <div class="side-fold side-fold-left"></div>
+                <div class="side-fold side-fold-right"></div>
+                <div class="pillow"></div>
+                <div class="film film-a"></div>
+                <div class="film film-b"></div>
+                <div class="wrinkle wrinkle-a"></div>
+                <div class="wrinkle wrinkle-b"></div>
+                <div class="wrinkle wrinkle-c"></div>
+                <div class="hanger-hole"></div>
+                <div class="pack-label">
+                  <div class="series">HYPER RIFT</div>
+                  <div class="brand">CHROMA</div>
+                  <div class="subbrand">FOIL BOOSTER</div>
+                </div>
+                <div class="foil-badge">5</div>
+                <div class="pack-footer">
+                  <span>PREMIUM CARDS</span>
+                  <span>HOLO SERIES 04</span>
+                </div>
+                <div class="barcode">
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="pack-half pack-half-bottom">
+              <div class="pack-face">
+                <div class="edge-crimp edge-crimp-top"></div>
+                <div class="edge-crimp edge-crimp-bottom"></div>
+                <div class="side-fold side-fold-left"></div>
+                <div class="side-fold side-fold-right"></div>
+                <div class="pillow"></div>
+                <div class="film film-a"></div>
+                <div class="film film-b"></div>
+                <div class="wrinkle wrinkle-a"></div>
+                <div class="wrinkle wrinkle-b"></div>
+                <div class="wrinkle wrinkle-c"></div>
+                <div class="hanger-hole"></div>
+                <div class="pack-label">
+                  <div class="series">HYPER RIFT</div>
+                  <div class="brand">CHROMA</div>
+                  <div class="subbrand">FOIL BOOSTER</div>
+                </div>
+                <div class="foil-badge">5</div>
+                <div class="pack-footer">
+                  <span>PREMIUM CARDS</span>
+                  <span>HOLO SERIES 04</span>
+                </div>
+                <div class="barcode">
+                  <span></span><span></span><span></span><span></span><span></span>
+                  <span></span><span></span><span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+            <div class="cut-light" id="cutLight"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
