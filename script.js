@@ -4,6 +4,7 @@ const packArea = document.querySelector("#packArea");
 const cardsArea = document.querySelector("#cardsArea");
 const cardStack = document.querySelector("#cardStack");
 let cards = [];
+const mobileMedia = window.matchMedia("(max-width: 820px), (pointer: coarse)");
 
 const CARD_DATA = [
   {
@@ -185,10 +186,16 @@ let cardExitDirections = cards.map(() => -1);
 let orientationActive = false;
 let audioContext = null;
 let noiseBuffer = null;
+let audioUnlocked = false;
 const packOpenAudio = new Audio("./assets/pack-open.wav");
 packOpenAudio.preload = "auto";
+packOpenAudio.playsInline = true;
 
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+function syncDeviceClass() {
+  document.body.classList.toggle("mobile-lite", mobileMedia.matches);
+}
 
 function escapeHtml(value) {
   return value
@@ -265,6 +272,30 @@ function ensureAudio() {
   return audioContext;
 }
 
+function unlockAudio() {
+  if (audioUnlocked) return;
+  audioUnlocked = true;
+  ensureAudio();
+  packOpenAudio.muted = true;
+  const maybePlay = packOpenAudio.play();
+  if (maybePlay && typeof maybePlay.then === "function") {
+    maybePlay
+      .then(() => {
+        packOpenAudio.pause();
+        packOpenAudio.currentTime = 0;
+        packOpenAudio.muted = false;
+      })
+      .catch(() => {
+        packOpenAudio.muted = false;
+        audioUnlocked = false;
+      });
+    return;
+  }
+  packOpenAudio.pause();
+  packOpenAudio.currentTime = 0;
+  packOpenAudio.muted = false;
+}
+
 function createNoiseSource() {
   const ctx = ensureAudio();
   if (!ctx || !noiseBuffer) return null;
@@ -274,12 +305,14 @@ function createNoiseSource() {
 }
 
 function playPackOpenSound() {
+  packOpenAudio.muted = false;
   packOpenAudio.pause();
   packOpenAudio.currentTime = 0;
   packOpenAudio.play().catch(() => {});
 }
 
 function playCardSwipeSound(offset) {
+  if (mobileMedia.matches) return;
   const ctx = ensureAudio();
   if (!ctx) return;
 
@@ -433,24 +466,25 @@ function openPack() {
 }
 
 function updateCards(dragX = 0, dragging = false) {
+  const compactStack = mobileMedia.matches;
   cards.forEach((card, index) => {
     const depth = index - activeIndex;
     const isTopCard = depth === 0;
     const isInDeck = depth >= 0;
     const archived = depth < 0;
-    const visibleDepth = clamp(depth, 0, 4);
+    const visibleDepth = clamp(depth, 0, compactStack ? 2 : 4);
 
-    let x = visibleDepth * 16;
-    let y = visibleDepth * -10;
-    let scale = 1 - visibleDepth * 0.045;
-    let rotate = visibleDepth * -3.2;
-    let opacity = isInDeck ? 1 - visibleDepth * 0.1 : 0;
+    let x = visibleDepth * (compactStack ? 12 : 16);
+    let y = visibleDepth * (compactStack ? -7 : -10);
+    let scale = 1 - visibleDepth * (compactStack ? 0.038 : 0.045);
+    let rotate = visibleDepth * (compactStack ? -2.2 : -3.2);
+    let opacity = isInDeck ? 1 - visibleDepth * (compactStack ? 0.14 : 0.1) : 0;
     let z = cards.length - visibleDepth;
 
     if (isTopCard) {
       x = dragX;
-      y = Math.abs(dragX) * 0.035;
-      rotate = dragX * 0.035;
+      y = Math.abs(dragX) * (compactStack ? 0.024 : 0.035);
+      rotate = dragX * (compactStack ? 0.026 : 0.035);
       scale = 1;
       opacity = 1;
       z = cards.length + 2;
@@ -481,7 +515,7 @@ function updateCards(dragX = 0, dragging = false) {
 
 pack.addEventListener("pointerdown", (event) => {
   if (opened) return;
-  ensureAudio();
+  unlockAudio();
   requestDeviceOrientation();
   updatePackReflection(event);
   const point = pointerInPack(event);
@@ -546,7 +580,7 @@ window.addEventListener("deviceorientation", updatePackOrientation);
 
 cardStack.addEventListener("pointerdown", (event) => {
   if (!opened) return;
-  ensureAudio();
+  unlockAudio();
   const topCard = cards[activeIndex];
   if (topCard && event.target.closest(".card") !== topCard) return;
 
@@ -589,5 +623,11 @@ window.addEventListener("keydown", (event) => {
   if (event.key.toLowerCase() === "r") resetPack();
 });
 
+mobileMedia.addEventListener("change", () => {
+  syncDeviceClass();
+  updateCards(cardDrag?.lastX ?? 0, Boolean(cardDrag));
+});
+
+syncDeviceClass();
 renderCards();
 resetPack();
